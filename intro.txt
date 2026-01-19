@@ -1,0 +1,17 @@
+Встановлення та налаштування оточення
+- NPM (npm --version)
+- Java (JDK) !! тільки 17 версія (https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+  = додаємо змінну оточення JAVA_HOME з шляхом до JDK (без /bin)
+  = додаємо запис до PATH з шляхом до JDK з /bin
+- Android Studio (https://developer.android.com/studio) або сторонній емулятор
+   ! після запуску продовжити установку компонент
+    * SDK
+    * Emulator
+  = додаємо змінну оточення ANDROID_HOME з шляхом до SDK (C:\Users\TheUser\AppData\Local\Android\Sdk)
+  = додаємо запис до PATH з шляхом до SDK tools: C:\Users\TheUser\AppData\Local\Android\Sdk\platform-tools
+- Термінал (PS) в режимі адміністратора - додаємо дозвіл 
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+  і перевантажуємо систему
+
+Створюємо проєкт за інструкцією
+https://reactnative.dev/docs/getting-started-without-a-framework
