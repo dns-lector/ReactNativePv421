@@ -1,7 +1,7 @@
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
- *
+ * npx react-native run-android
  * @format
  */
 
@@ -16,21 +16,21 @@ function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <SafeAreaProvider>
+    <View>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <AppContent />
-    </SafeAreaProvider>
+    </View>
   );
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+  //const safeAreaInsets = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
       <NewAppScreen
         templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
+       // safeAreaInsets={safeAreaInsets}
       />
     </View>
   );

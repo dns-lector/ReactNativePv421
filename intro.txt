@@ -1,5 +1,5 @@
 Встановлення та налаштування оточення
-- NPM (npm --version)
+- NodeJS (node --version)
 - Java (JDK) !! тільки 17 версія (https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
   = додаємо змінну оточення JAVA_HOME з шляхом до JDK (без /bin)
   = додаємо запис до PATH з шляхом до JDK з /bin
