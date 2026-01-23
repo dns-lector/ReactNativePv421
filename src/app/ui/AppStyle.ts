@@ -24,7 +24,10 @@ const AppStyle = StyleSheet.create({
     width: "100%",
   },
   navBar: {   // footer
-
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
   },
 });
 
