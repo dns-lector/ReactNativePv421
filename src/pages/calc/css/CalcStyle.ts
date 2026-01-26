@@ -19,7 +19,7 @@ const CalcStyle = StyleSheet.create({
    result: {
     flex: 2,
     color: textColor,
-    fontSize: 50,
+    // fontSize: 50,
     textAlign: "right",
    },
    memoryRow: {
@@ -36,6 +36,18 @@ const CalcStyle = StyleSheet.create({
    },
    memoryButton: {
     color: "#bbb",
+   },
+   // Landscape
+   containerResExpMem: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+   },
+   containerExpMem: {
+      flex: 2,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
    }
 });
 
