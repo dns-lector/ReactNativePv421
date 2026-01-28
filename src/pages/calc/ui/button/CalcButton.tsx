@@ -5,11 +5,16 @@ import CalcButtonType from "./CalcButtonType";
 
 export default function CalcButton({data}:{data:ICalcButtonData}) {
     return <TouchableOpacity 
-        onPress={() => { if(data.action) data.action(data) }} 
+        onPress={() => { 
+            if(data.action && data.buttonType != CalcButtonType.disabled) {
+                data.action(data);
+            }
+        }} 
         style={[
             styles.calcButton,
             ( data.buttonType == CalcButtonType.digit ? styles.digitButton
             : data.buttonType == CalcButtonType.operation ? styles.operButton
+            : data.buttonType == CalcButtonType.disabled ? styles.disabledButton
             : styles.equalButton
             )]}>
         <Text style={styles.calcButtonText}>{data.text}</Text>
@@ -40,5 +45,8 @@ const styles = StyleSheet.create({
     equalButton: {
         backgroundColor: "#4e97f1",
 
-    }
+    },    
+    disabledButton: {
+        backgroundColor: "#282828",
+    },
 });

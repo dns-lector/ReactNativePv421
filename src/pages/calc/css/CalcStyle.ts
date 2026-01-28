@@ -39,6 +39,7 @@ const CalcStyle = StyleSheet.create({
    },
    // Landscape
    containerResExpMem: {
+      flex: 2,
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
