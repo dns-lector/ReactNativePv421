@@ -4,46 +4,126 @@ import CalcButton from "./ui/button/CalcButton";
 import CalcButtonType from "./ui/button/CalcButtonType";
 import ICalcButtonData from "./ui/button/ICalcButtonData";
 import { useState } from "react";
+import CalcOperations from "./model/CalcOperations";
 
 const divZeroMessage = "Cannot divide by zero";
+const dotSymbol = ',';
+const minusSymbol = '-';
+const addSymbol = '+';
+const divSymbol = '÷';
+const mulSymbol = '×';
+const subSymbol = '-';
+const maxDigits = 16;
+
+interface ICalcState {
+    result: string,                           // вміст основного поля калькулятора - "екрану"
+    expression: string,                       // вираз, що формується вище "результату"
+    needClearResult: boolean,                 // потреба стерти результат при початку введення (після операцій)                    
+    needClearExpression: boolean,             // потреба стерти вираз при початку введення (після операцій)                 
+    isError: boolean,                         // чи знаходиться калькулятор в аварійному стані (показ помилки)    
+    operation?: CalcOperations | undefined,   // операція, що була натиснена (+/-/*...)
+    prevArgument?: number | undefined,        // аргумент, що був перед натисненням операції
+};
+
+const initialState:ICalcState = {
+    result: "0",
+    expression: "",
+    needClearResult: false,        
+    needClearExpression: false,
+    isError: false,    
+};
 
 export default function Calc() {
     const {width, height} = useWindowDimensions();
-    const [result, setResult] = useState<string>("0");  // TODO: поєднати окремі стани до одного об'єкту
-    const [expression, setExpression] = useState<string>("");
-    const [needClear, setNeedClear] = useState<boolean>(false);    // потреба стерти результат при початку введення (після операцій)
-    const [needClrExp, setNeedClrExp] = useState<boolean>(false);  // потреба стерти вираз при початку введення (після операцій)
-    const [isError, setError] = useState<boolean>(false);          // чи знаходиться калькулятор в аварійному стані (показ помилки)
-    const dotSymbol = ',';
-    const minusSymbol = '-';
-    const maxDigits = 16;
+    const [calcState, setCalcState] = useState<ICalcState>(initialState);
+
+    const operationClick = (btn:ICalcButtonData) => {
+        const newState:ICalcState = {...calcState,
+            needClearResult: true,
+            needClearExpression: false,
+            operation: 
+                btn.text == divSymbol ? CalcOperations.div
+                : btn.text == mulSymbol ? CalcOperations.mul
+                : btn.text == addSymbol ? CalcOperations.add
+                : btn.text == subSymbol ? CalcOperations.sub
+                : undefined,
+        };
+        if(calcState.operation) {   // повторне натискання -- є попередня невиконана операція, слід обчислити
+            const prevResult = doOperationWithState();
+            const res = numToResult(prevResult);
+            newState.expression = res + ' ' + btn.text;
+            newState.result = res;
+            newState.prevArgument = prevResult;
+        }
+        else {
+            newState.expression = calcState.result + ' ' + btn.text;
+            newState.prevArgument = resToNumber();
+        }
+        setCalcState(newState);
+    };
+
+    const equalClick = (_:ICalcButtonData) => {
+        if(calcState.operation) {
+            setCalcState({...calcState,
+                expression: calcState.expression + ' ' + calcState.result + ' =',
+                needClearResult: true,
+                needClearExpression: true,
+                prevArgument: undefined,
+                operation: undefined,
+                result: numToResult( doOperationWithState() ),
+            });
+        }
+    };
+
+    const doOperationWithState = ():number => {
+        const arg = resToNumber();
+        return calcState.operation == CalcOperations.div ? calcState.prevArgument! / arg 
+            :  calcState.operation == CalcOperations.mul ? calcState.prevArgument! * arg 
+            :  calcState.operation == CalcOperations.add ? calcState.prevArgument! + arg 
+            :  calcState.operation == CalcOperations.sub ? calcState.prevArgument! - arg 
+            :  Number.NaN
+    };
 
     const digitClick = (btn:ICalcButtonData) => {
-        var res = result;
-        console.log(res);
-        if(res === "0" || needClear || isError) {
+        var res = calcState.result;
+        if(res === "0" || calcState.needClearResult || calcState.isError) {
             res = "";
-            setNeedClear(false);
-            setError(false);
+            calcState.needClearResult = false;
+            calcState.isError = false;
         }
-        if(needClrExp) {
-            setExpression("");
-            setNeedClrExp(false);
+        if(calcState.needClearExpression) {
+            calcState.needClearExpression = false;
+            calcState.expression = "";
         }
 
         // Обмежити введення 16 (maxDigits) цифрами (саме цифрами, точку та знак (мінус) ігнорувати)
         if(res.replace(dotSymbol, '').replace(minusSymbol, '').length >= maxDigits) return;
 
-        setResult(res + btn.text);
+        setCalcState({...calcState, result: res + btn.text});
     };
 
     const backspaceClick = (_:ICalcButtonData) => {
-        if(result.length > 1) {
-            setResult(result.substring(0, result.length - 1));
-        }
-        else {
-            setResult("0");
-        }
+        // setCalcState({...calcState, 
+        //     result: calcState.result.length > 1
+        //     ? calcState.result.substring(0, calcState.result.length - 1)
+        //     : "0"
+        // });
+        setCalcState(prevState => {
+            if(prevState.needClearExpression) {
+                prevState.needClearExpression = false;
+                prevState.expression = "";
+            }
+            if(prevState.needClearResult) {
+                prevState.needClearResult = false;
+                prevState.result = "0";
+            }
+            else {
+                prevState.result = calcState.result.length > 1
+                 ? calcState.result.substring(0, calcState.result.length - 1)
+                 : "0"
+            }
+            return {...prevState};
+        });
     }
 
     const dotClick = (btn:ICalcButtonData) => {
@@ -51,23 +131,34 @@ export default function Calc() {
         // якщо на рез. "0", то він не стирається, буде "0,"
         // якщо у рез. вже є кома, то натиснення ігнорується
         // Символ коми відповідає тексту на кнопці
-        if(!result.includes(btn.text)) {
-            setResult(result + btn.text);
+        const newState = {...calcState};
+
+        if(calcState.needClearExpression) {
+            newState.expression = "";
+            newState.needClearExpression = false;
         }
+
+        if(calcState.needClearResult) {
+            newState.result = "0" + dotSymbol;
+            newState.needClearResult = false;
+        }
+        else if(! calcState.result.includes(btn.text)) {
+            newState.result = calcState.result + btn.text;
+        }
+        setCalcState(newState);
     };
 
     const inverseClick = (_:ICalcButtonData) => {
-        setExpression(`1/(${result})`);
         var arg = resToNumber();
-        if(arg == 0) {
-            setResult(divZeroMessage);
-            setError(true);
-        }
-        else {
-            setResult( numToResult(1.0 / arg) );
-        }        
-        setNeedClear(true);
-        setNeedClrExp(true);
+        setCalcState({...calcState, 
+            expression: `1/(${calcState.result})`,
+            needClearExpression: true,
+            needClearResult: true,
+            isError: arg == 0,
+            result: arg == 0
+                ? divZeroMessage
+                : numToResult(1.0 / arg)
+        });
         // 1. Перевищення кількості цифр 
         // 2. Символ точки (коми) не відповідає dotSymbol
         //  2.2 Через це також не парситься число, введене з комою (dotSymbol)
@@ -78,13 +169,17 @@ export default function Calc() {
     };
 
     const clearClick = (_:ICalcButtonData) => {
-        setResult("0");
-        setExpression("");
-        setError(false);
+        setCalcState({...calcState, 
+            expression: "",
+            isError: false,
+            result: "0",
+            operation: undefined,
+            prevArgument: undefined
+        });
     }
 
     const resToNumber = (): number => {
-        var res = result.replace(dotSymbol, '.').replace(minusSymbol, '-');
+        var res = calcState.result.replace(dotSymbol, '.').replace(minusSymbol, '-');
         return Number(res);
     };
 
@@ -98,8 +193,8 @@ export default function Calc() {
     }
 
     const portraitView = () => <View style={CalcStyle.calc}>
-        <Text style={CalcStyle.expression}>{expression}</Text>
-        <Text style={[CalcStyle.result, {fontSize: (result.length <= 12 ? 50 : (width - 20) / result.length * 1.8 )}]}>{result}</Text>
+        <Text style={CalcStyle.expression}>{calcState.expression}</Text>
+        <Text style={[CalcStyle.result, {fontSize: (calcState.result.length <= 12 ? 50 : (width - 20) / calcState.result.length * 1.8 )}]}>{calcState.result}</Text>
         <View style={CalcStyle.memoryRow}>
             <Text style={CalcStyle.memoryButton}>MC</Text>
         </View>
@@ -110,56 +205,56 @@ export default function Calc() {
             <CalcButton data={{text:"⌫", buttonType: CalcButtonType.operation, action: backspaceClick}}/>
         </View>
         <View style={CalcStyle.buttonRow}>
-            <CalcButton data={{text:"1/x", buttonType: isError ? CalcButtonType.disabled : CalcButtonType.operation, action: inverseClick}}/>
-            <CalcButton data={{text:"x2",  buttonType: isError ? CalcButtonType.disabled : CalcButtonType.operation}}/>
-            <CalcButton data={{text:"Vx",  buttonType: isError ? CalcButtonType.disabled : CalcButtonType.operation}}/>
-            <CalcButton data={{text:"÷",   buttonType: isError ? CalcButtonType.disabled : CalcButtonType.operation}}/>
+            <CalcButton data={{text:"1/x", buttonType: calcState.isError ? CalcButtonType.disabled : CalcButtonType.operation, action: inverseClick}}/>
+            <CalcButton data={{text:"x2",  buttonType: calcState.isError ? CalcButtonType.disabled : CalcButtonType.operation}}/>
+            <CalcButton data={{text:"Vx",  buttonType: calcState.isError ? CalcButtonType.disabled : CalcButtonType.operation}}/>
+            <CalcButton data={{text:divSymbol,   buttonType: calcState.isError ? CalcButtonType.disabled : CalcButtonType.operation, action: operationClick}}/>
         </View>
         <View style={CalcStyle.buttonRow}>
             <CalcButton data={{text:"7", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:"8", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:"9", buttonType: CalcButtonType.digit, action: digitClick }}/>
-            <CalcButton data={{text:"×", buttonType: CalcButtonType.operation}}/>
+            <CalcButton data={{text:mulSymbol, buttonType: CalcButtonType.operation, action: operationClick}}/>
         </View>
         <View style={CalcStyle.buttonRow}>
             <CalcButton data={{text:"4", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:"5", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:"6", buttonType: CalcButtonType.digit, action: digitClick }}/>
-            <CalcButton data={{text:"-", buttonType: CalcButtonType.operation}}/>
+            <CalcButton data={{text:subSymbol, buttonType: CalcButtonType.operation, action: operationClick}}/>
         </View>
         <View style={CalcStyle.buttonRow}>
             <CalcButton data={{text:"1", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:"2", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:"3", buttonType: CalcButtonType.digit, action: digitClick }}/>
-            <CalcButton data={{text:"+", buttonType: CalcButtonType.operation}}/>
+            <CalcButton data={{text:addSymbol, buttonType: CalcButtonType.operation, action: operationClick}}/>
         </View>
         <View style={CalcStyle.buttonRow}>
             <CalcButton data={{text:"+/-", buttonType: CalcButtonType.digit    }}/>
             <CalcButton data={{text:"0", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:dotSymbol, buttonType: CalcButtonType.digit, action: dotClick }}/>
-            <CalcButton data={{text:"=", buttonType: CalcButtonType.equal    }}/>
+            <CalcButton data={{text:"=", buttonType: CalcButtonType.equal, action: equalClick }}/>
         </View>
     </View>;
 
     const landscapeView = () => <View style={CalcStyle.calc}>
         <View style={CalcStyle.containerResExpMem}>
             <View style={CalcStyle.containerExpMem}>
-                <Text style={CalcStyle.expression}>{expression}</Text>
+                <Text style={CalcStyle.expression}>{calcState.expression}</Text>
                 <View style={CalcStyle.memoryRow}>
                     <Text style={CalcStyle.memoryButton}>MC</Text>
                 </View>
             </View>            
             <Text style={[
                 CalcStyle.result, 
-                {fontSize: (result.length <= 12 ? 50 : (width - 20) / result.length * 1.8 )}]}>{result}</Text>
+                {fontSize: (calcState.result.length <= 12 ? 50 : (width - 20) / calcState.result.length * 1.8 )}]}>{calcState.result}</Text>
         </View>
 
         <View style={CalcStyle.buttonRow}>
             <CalcButton data={{text:"％",  buttonType: CalcButtonType.operation, action: (btn:ICalcButtonData) => console.log(btn.text)}}/>
             <CalcButton data={{text:"÷", buttonType: CalcButtonType.operation}}/>
-            <CalcButton data={{text:"7", buttonType: CalcButtonType.digit, action: digitClick    }}/>
-            <CalcButton data={{text:"8", buttonType: CalcButtonType.digit, action: digitClick    }}/>
-            <CalcButton data={{text:"9", buttonType: CalcButtonType.digit, action: digitClick    }}/>
+            <CalcButton data={{text:"7", buttonType: CalcButtonType.digit, action: digitClick }}/>
+            <CalcButton data={{text:"8", buttonType: CalcButtonType.digit, action: digitClick }}/>
+            <CalcButton data={{text:"9", buttonType: CalcButtonType.digit, action: digitClick }}/>
             <CalcButton data={{text:"C",  buttonType: CalcButtonType.operation}}/>
         </View>
         <View style={CalcStyle.buttonRow}>
@@ -204,4 +299,6 @@ export default function Calc() {
 максимальну кількість цифр, що можна набрати. 
 Зауважити роботу Backspace, оскільки він перерозподілятиме пробіли
 (12 345 678 -> 1 234 567)
+
+Д.З. Завершити проєкт "Калькулятор"
 */

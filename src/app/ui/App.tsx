@@ -4,12 +4,11 @@ import AppStyle from "./AppStyle";
 import { BackHandler, Image, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { useEffect, useState } from "react";
 import Calc from "../../pages/calc/Calc";
+import Swipe from "../../pages/swipe/Swipe";
+import IRouteInformation from "../../features/interfaces/IRouteInformation";
+import AppContext from "../../features/context/AppContext";
 
-// /product?id=100500
-interface IRouteInformation {
-    slug: string,          // product
-    parameters?: object     // { "id": 100500 }
-};
+
 
 export default function App() {
     const [history, setHistory] = useState<Array<IRouteInformation>>([]);
@@ -51,16 +50,24 @@ export default function App() {
 
             {width < height &&
                 <View style={AppStyle.appBar}>
+                    <TouchableOpacity                         
+                        onPress={() => popRoute()} >
+                            <Text style={AppStyle.appBackIcon}>&lt;</Text>
+                    </TouchableOpacity>
                     <Text style={AppStyle.appBarTitle}>React Native PV-421</Text>
+                    <View />
                 </View>
             }            
 
-            <View style={AppStyle.main}>
-                { page.slug == 'home' ? <Home />
-                : page.slug == 'calc' ? <Calc />
-                : <Text>404</Text>
-                }                
-            </View>
+            <AppContext.Provider value={{navigate}}>
+                <View style={AppStyle.main}>
+                    { page.slug == 'home'  ? <Home />
+                    : page.slug == 'calc'  ? <Calc />
+                    : page.slug == 'swipe' ? <Swipe />
+                    : <Text>404</Text>
+                    }                
+                </View>
+            </AppContext.Provider>
 
             {width < height &&
                 <View style={AppStyle.navBar}>
@@ -68,7 +75,7 @@ export default function App() {
                         style={{width: 48, height: 48}}
                         onPress={() => navigate({slug: "home"})}>
                         <Image 
-                            source={require("../assets/img/home.png")}
+                            source={require("../../features/assets/img/home.png")}
                             style={{width: 24, height: 28, tintColor: "#ddd", marginTop: 16}} />
                     </TouchableOpacity>
 
@@ -76,7 +83,7 @@ export default function App() {
                         style={{width: 48, height: 48}}
                         onPress={() => navigate({slug: "calc"})}>
                         <Image 
-                            source={require("../assets/img/calc.png")}
+                            source={require("../../features/assets/img/calc.png")}
                             style={{width: 28, height: 28, tintColor: "#ddd", marginTop: 16}} />
                     </TouchableOpacity>
                 </View>
