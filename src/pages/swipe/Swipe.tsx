@@ -1,12 +1,23 @@
 import { GestureResponderEvent, Text, TouchableWithoutFeedback, useWindowDimensions, View } from "react-native";
 import SwipeStyle from "./css/SwipeStyle";
+import { useState } from "react";
 
 var startEvent:GestureResponderEvent|null = null;
 const minSwipeLength = 100;    // dip
 const minSwipeVelocity = 0.2;  // 100 dip / 500 ms
 
+interface ISwipeData {
+    eventDetails: string,
+    eventMessage: string
+};
+
 export default function Swipe() {
     const {width, height} = useWindowDimensions();
+    const [data, setData] = useState<ISwipeData>({
+        eventDetails: "",
+        eventMessage: ""
+    });
+
     const shortSide = Math.min(width, height);
     const fieldSide = 0.94 * shortSide;  // 94% від найменшого розміру
     const containerDirection = width < height ? "column" : "row";
@@ -21,31 +32,43 @@ export default function Swipe() {
             const dt = e.nativeEvent.timestamp - startEvent.nativeEvent.timestamp;
             if(Math.abs(dx) > 2 * Math.abs(dy)) {   // horizontal
                 if(Math.abs(dx) / dt > minSwipeVelocity && Math.abs(dx) > minSwipeLength) {
-                    console.log("Horizontal")
+                    if(dx > 0) {   // e1.x ----------> e2.x   =>  dx > 0 
+                        data.eventMessage = "Right";
+                    }
+                    else {
+                        data.eventMessage = "Left";
+                    }
                 }
                 else {
-                    console.log("Horizontal but limited")
+                    data.eventMessage = "Horizontal but limited";
                 }
             }
             else if(Math.abs(dy) > 2 * Math.abs(dx)) {  // vertical
                 if(Math.abs(dy) / dt > minSwipeVelocity && Math.abs(dy) > minSwipeLength) {
-                    console.log("Vertical")
+                    if(dy > 0) {
+                        data.eventMessage = "Bottom";
+                    }
+                    else {
+                        data.eventMessage = "Top";
+                    }                    
                 }
                 else {
-                    console.log("Vertical but limited")
+                    data.eventMessage = "Vertical but limited";
                 }
             }
             else {  // not sure -- diagonal
-                console.log("not sure -- diagonal")
+                data.eventMessage = "not sure -- diagonal";
             }
-            console.log(dx,dy,dt);
+            setData({...data,
+                eventDetails: `dx=${dx.toFixed(1)}, dy=${dy.toFixed(1)}, dt=${dt}`
+            });
             startEvent = null;
         }
     };
 
     return <View style={[SwipeStyle.swipeContainer, {flexDirection: containerDirection}]}>
 
-        <Text style={SwipeStyle.swipeTitle}>Swipe</Text>
+        <Text style={SwipeStyle.swipeTitle}>Swipe {data.eventMessage}</Text>
 
         <TouchableWithoutFeedback
             onPressIn={beginGesture}
@@ -54,7 +77,7 @@ export default function Swipe() {
                 </View>
         </TouchableWithoutFeedback>
 
-        <View />
+        <Text style={SwipeStyle.swipeTitle}>{data.eventDetails}</Text>
 
     </View>;
 }
@@ -65,7 +88,6 @@ export default function Swipe() {
 - напрям свайпу має надійно визначатись (далекий від діагоналі)
 
 Д.З. Реалізувати детектування діагональних жестів (свайпів):
-розділити "головну діагональ" (лівий верх - правий низ) 
-та "антидіагональ" (у термінології матриць).
-До звіту додати скріншот або відеозапис консолі
+додатково до попереднього ДЗ розділити жести на 4 типи - за кутом,
+до якого вони спрямовані
 */

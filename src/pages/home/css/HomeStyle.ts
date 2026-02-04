@@ -14,12 +14,14 @@ const HomeStyle = StyleSheet.create({
     homeImage: {
         width: 50,
         height: 50,
-        tintColor: textColor
+        tintColor: textColor,
+        marginLeft: 10.0,
+        marginRight: 15.0,
     },
     menuItem: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-evenly",
+        justifyContent: "flex-start",
         alignItems:"center",
         borderColor: textColor,
         borderBlockColor:textColor,
@@ -30,7 +32,7 @@ const HomeStyle = StyleSheet.create({
         marginHorizontal: 20.0,
         marginVertical: 10.0,
         padding: 10.0,
-    }
+    },
 });
 
 export default HomeStyle;

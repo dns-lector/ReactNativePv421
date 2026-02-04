@@ -7,6 +7,7 @@ import Calc from "../../pages/calc/Calc";
 import Swipe from "../../pages/swipe/Swipe";
 import IRouteInformation from "../../features/interfaces/IRouteInformation";
 import AppContext from "../../features/context/AppContext";
+import Anim from "../../pages/anim/Anim";
 
 
 
@@ -61,8 +62,9 @@ export default function App() {
 
             <AppContext.Provider value={{navigate}}>
                 <View style={AppStyle.main}>
-                    { page.slug == 'home'  ? <Home />
+                    { page.slug == 'anim'  ? <Anim />
                     : page.slug == 'calc'  ? <Calc />
+                    : page.slug == 'home'  ? <Home />
                     : page.slug == 'swipe' ? <Swipe />
                     : <Text>404</Text>
                     }                
