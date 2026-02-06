@@ -35,6 +35,81 @@ export default function Anim() {               // з ініціалізаціє�
         ]).start();                            // старт - один раз для всієї послідовності
     };
 
+    const scaleValue = useRef(
+        new Animated.Value(1)
+    ).current;
+    const scalePress = () => {
+        Animated.sequence([  
+            Animated.timing(scaleValue, {
+                toValue: 1.25,
+                useNativeDriver: true,
+                duration: 300,
+            }),
+            Animated.timing(scaleValue, {
+                toValue: 1.0,
+                useNativeDriver: true,
+                duration: 300,
+            }),
+        ]).start();
+    };
+
+    const rotateValue = useRef(
+        new Animated.Value(0)
+    ).current;
+    const rotatePress = () => {
+        Animated.sequence([  
+            Animated.timing(rotateValue, {
+                toValue: 1,
+                useNativeDriver: true,
+                duration: 300,
+            }),
+            Animated.timing(rotateValue, {
+                toValue: 0,
+                useNativeDriver: true,
+                duration: 300,
+            }),
+        ]).start();
+    };
+    const rotateDeg = rotateValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '45deg'],  // Map 0 to 0deg, 1 to 45deg
+    });
+
+    const translateValue = useRef(
+        new Animated.Value(0)
+    ).current;
+    const transOpacityValue = useRef(
+        new Animated.Value(1)
+    ).current;
+    const translatePress = () => {
+        Animated.parallel([
+            Animated.sequence([  
+                Animated.timing(translateValue, {
+                    toValue: 30,
+                    useNativeDriver: true,
+                    duration: 300,
+                }),
+                Animated.timing(translateValue, {
+                    toValue: 0,
+                    useNativeDriver: true,
+                    duration: 300,
+                }),
+            ]),
+            Animated.sequence([  
+                Animated.timing(transOpacityValue, {
+                    toValue: 0.25,
+                    useNativeDriver: true,
+                    duration: 300,
+                }),
+                Animated.timing(transOpacityValue, {
+                    toValue: 1,
+                    useNativeDriver: true,
+                    duration: 300,
+                }),
+            ]),
+        ]).start();
+    };
+
     return <View style={AnimStyle.animLayout}>
 
         <View style={AnimStyle.animRow}>
@@ -58,13 +133,48 @@ export default function Anim() {               // з ініціалізаціє�
         </View>
 
         <View style={AnimStyle.animRow}>
-            <View style={AnimStyle.animItem}></View>
-            <View style={AnimStyle.animItem}></View>
+            <View style={AnimStyle.animItem}>
+                <Pressable onPress={scalePress}>
+                    <Animated.View style={{transform: [{scale: scaleValue}]}}>
+                        <View style={AnimStyle.animBlock}></View>
+                    </Animated.View>                    
+                </Pressable>
+                <Text style={AnimStyle.animLabel}>Scale (масштаб)</Text>
+            </View>
+
+            <View style={AnimStyle.animItem}>
+                <Pressable onPress={rotatePress}>
+                    <Animated.View style={{transform: [{rotate: rotateDeg}]}}>
+                        <View style={AnimStyle.animBlock}></View>
+                    </Animated.View>                    
+                </Pressable>
+                <Text style={AnimStyle.animLabel}>Rotate (поворот)</Text>
+            </View>
         </View>
     
         <View style={AnimStyle.animRow}>
-            <View style={AnimStyle.animItem}></View>
-            <View style={AnimStyle.animItem}></View>
+            <View style={AnimStyle.animItem}>
+                <Pressable onPress={translatePress}>
+                    <Animated.View style={{
+                        opacity: transOpacityValue,
+                        transform: [
+                            {translateX: translateValue},
+                        ]
+                    }}>
+                        <View style={AnimStyle.animBlock}></View>
+                    </Animated.View>                    
+                </Pressable>
+                <Text style={AnimStyle.animLabel}>Translate + Fade</Text>
+            </View>
+
+            <View style={AnimStyle.animItem}>
+                {/* Д.З. Реалізувати усі види анімацій до паралельного виконання:
+                    вихідне положення (центр прозорість 0.6) -> 
+                     зрушення праворуч і вгору, зменшення масштабу і прозорості (до 0.3), поворот на 30 гр. ->
+                    центр ->
+                     зрушення ліворуч і вниз, збільшення масштабу і прозорості (до 1.0), поворот на -30 гр. ->
+                    центр   */}
+            </View>
         </View>
     
     </View>;

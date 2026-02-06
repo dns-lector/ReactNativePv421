@@ -8,13 +8,15 @@ import Swipe from "../../pages/swipe/Swipe";
 import IRouteInformation from "../../features/interfaces/IRouteInformation";
 import AppContext from "../../features/context/AppContext";
 import Anim from "../../pages/anim/Anim";
-
+import IUser from "../../features/interfaces/IUser";
+import Auth from "../../pages/auth/Auth";
 
 
 export default function App() {
+    const {width, height} = useWindowDimensions();
     const [history, setHistory] = useState<Array<IRouteInformation>>([]);
     const [page, setPage] = useState<IRouteInformation>({slug: "home"});
-    const {width, height} = useWindowDimensions();
+    const [user, setUser] = useState<IUser|null>(null);
 
     const navigate = (route:IRouteInformation) => {
         console.log(history);
@@ -60,9 +62,10 @@ export default function App() {
                 </View>
             }            
 
-            <AppContext.Provider value={{navigate}}>
+            <AppContext.Provider value={{navigate, user, setUser}}>
                 <View style={AppStyle.main}>
-                    { page.slug == 'anim'  ? <Anim />
+                    { /* user == null ? <Auth />
+                    : */page.slug == 'anim'  ? <Anim />
                     : page.slug == 'calc'  ? <Calc />
                     : page.slug == 'home'  ? <Home />
                     : page.slug == 'swipe' ? <Swipe />
