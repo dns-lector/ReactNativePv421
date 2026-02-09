@@ -10,6 +10,7 @@ import AppContext from "../../features/context/AppContext";
 import Anim from "../../pages/anim/Anim";
 import IUser from "../../features/interfaces/IUser";
 import Auth from "../../pages/auth/Auth";
+import Rates from "../../pages/rates/Rates";
 
 
 export default function App() {
@@ -64,10 +65,11 @@ export default function App() {
 
             <AppContext.Provider value={{navigate, user, setUser}}>
                 <View style={AppStyle.main}>
-                    { /* user == null ? <Auth />
-                    : */page.slug == 'anim'  ? <Anim />
-                    : page.slug == 'calc'  ? <Calc />
-                    : page.slug == 'home'  ? <Home />
+                    { user == null || page.slug == 'auth' ? <Auth />
+                    : page.slug == 'anim'  ? <Anim  />
+                    : page.slug == 'calc'  ? <Calc  />
+                    : page.slug == 'home'  ? <Home  />
+                    : page.slug == 'rates' ? <Rates />
                     : page.slug == 'swipe' ? <Swipe />
                     : <Text>404</Text>
                     }                
@@ -89,6 +91,22 @@ export default function App() {
                         onPress={() => navigate({slug: "calc"})}>
                         <Image 
                             source={require("../../features/assets/img/calc.png")}
+                            style={{width: 28, height: 28, tintColor: "#ddd", marginTop: 16}} />
+                    </TouchableOpacity>
+
+                     <TouchableOpacity 
+                        style={{width: 48, height: 48}}
+                        onPress={() => navigate({slug: "rates"})}>
+                        <Image 
+                            source={require("../../features/assets/img/rate.png")}
+                            style={{width: 28, height: 28, tintColor: "#ddd", marginTop: 16}} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        style={{width: 48, height: 48}}
+                        onPress={() => navigate({slug: "auth"})}>
+                        <Image 
+                            source={require("../../features/assets/img/auth.png")}
                             style={{width: 28, height: 28, tintColor: "#ddd", marginTop: 16}} />
                     </TouchableOpacity>
                 </View>

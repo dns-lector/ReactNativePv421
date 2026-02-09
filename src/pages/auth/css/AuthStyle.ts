@@ -24,6 +24,8 @@ const AuthStyle = StyleSheet.create({
         borderColor: textColor,
         borderRadius: 5.0,
         flex: 3,
+        color: textColor,
+        paddingHorizontal: 5.0,
     },
     authButton: {
         borderWidth: 1.0,
@@ -35,7 +37,7 @@ const AuthStyle = StyleSheet.create({
         backgroundColor: "#333",
     },
     authButtonText: {
-        color: textColor,
+        // color: textColor,
         textAlign: "center",
     }
 });
