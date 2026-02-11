@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import RatesStyle from "./css/RatesStyle";
 import INbuRate from "./orm/INbuRate";
 import { useEffect, useState } from "react";
@@ -13,7 +13,21 @@ export default function Rates() {
     }, []);
 
     return <View style={RatesStyle.container}>
-        <Text style={RatesStyle.pageTitle}>Курси валют НБУ</Text>
+
+        <View style={RatesStyle.titleBar}>
+            <View style={RatesStyle.titleSearch}>
+                <Image style={RatesStyle.titleSearchImg} source={require('../../features/assets/img/search.png')} />
+                <TextInput style={RatesStyle.titleSearchInput} />
+            </View>
+            <Text style={RatesStyle.pageTitle}>Курси валют НБУ</Text>
+            <View style={RatesStyle.titleDate}>
+                <TouchableOpacity>
+                    <Text style={RatesStyle.titleDateText}>11.02.2026</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+        
+
         {isLoading
         ? <Text>Завантажується...</Text>
         : <ScrollView>

@@ -18,8 +18,31 @@ const RatesStyle = StyleSheet.create({
         borderRadius: 5.0,
         backgroundColor: "#333",
     },
+    titleBar: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        height: 50.0,
+    },
+    titleSearch: {
+        flex: 1,
+    },
+    titleSearchImg: {
+
+    },
+    titleSearchInput: {
+
+    },
     rateText: {
         color: textColor,
+        flex: 1,
+    },
+    titleDate: {
+        flex: 1,
+    },
+    titleDateText: {
+
     },
 });
 
