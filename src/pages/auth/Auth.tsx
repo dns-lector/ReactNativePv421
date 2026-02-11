@@ -6,8 +6,8 @@ import AppContext from '../../features/context/AppContext';
 
 
 export default function Auth() {
-    const [login, setLogin] = useState("");
-    const [password, setPassword] = useState("");
+    const [login, setLogin] = useState("user");
+    const [password, setPassword] = useState("123");
     const [isFormValid, setFormValid] = useState(false);
     const {user, setUser} = useContext(AppContext);
 

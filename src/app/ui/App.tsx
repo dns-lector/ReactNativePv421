@@ -11,6 +11,8 @@ import Anim from "../../pages/anim/Anim";
 import IUser from "../../features/interfaces/IUser";
 import Auth from "../../pages/auth/Auth";
 import Rates from "../../pages/rates/Rates";
+import '../../shared/extensions/DateExtensions';
+import '../../shared/extensions/NumberExtensions';
 
 
 export default function App() {
