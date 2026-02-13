@@ -13,6 +13,9 @@ import Auth from "../../pages/auth/Auth";
 import Rates from "../../pages/rates/Rates";
 import '../../shared/extensions/DateExtensions';
 import '../../shared/extensions/NumberExtensions';
+import ModalView from "./ModalView";
+import IModalData from "../../features/interfaces/modal/IModalData";
+import Alerts from "../../pages/alerts/Alerts";
 
 
 export default function App() {
@@ -20,6 +23,7 @@ export default function App() {
     const [history, setHistory] = useState<Array<IRouteInformation>>([]);
     const [page, setPage] = useState<IRouteInformation>({slug: "home"});
     const [user, setUser] = useState<IUser|null>(null);
+    const [modalData, setModalData] = useState<IModalData|null>(null);
 
     const navigate = (route:IRouteInformation) => {
         console.log(history);
@@ -51,6 +55,10 @@ export default function App() {
         return () => { listener.remove(); };
     }, []);
 
+    const showModal = (data:IModalData) => {
+        setModalData(data);
+    };
+
     return <SafeAreaProvider>
         <SafeAreaView edges={['top', 'bottom']} style={AppStyle.container}>
 
@@ -65,14 +73,15 @@ export default function App() {
                 </View>
             }            
 
-            <AppContext.Provider value={{navigate, user, setUser}}>
+            <AppContext.Provider value={{navigate, user, setUser, showModal,}}>
                 <View style={AppStyle.main}>
                     { user == null || page.slug == 'auth' ? <Auth />
-                    : page.slug == 'anim'  ? <Anim  />
-                    : page.slug == 'calc'  ? <Calc  />
-                    : page.slug == 'home'  ? <Home  />
-                    : page.slug == 'rates' ? <Rates />
-                    : page.slug == 'swipe' ? <Swipe />
+                    : page.slug == 'alerts' ? <Alerts />
+                    : page.slug == 'anim'   ? <Anim   />
+                    : page.slug == 'calc'   ? <Calc   />
+                    : page.slug == 'home'   ? <Home   />
+                    : page.slug == 'rates'  ? <Rates  />
+                    : page.slug == 'swipe'  ? <Swipe  />
                     : <Text>404</Text>
                     }                
                 </View>
@@ -113,7 +122,9 @@ export default function App() {
                     </TouchableOpacity>
                 </View>
             }
-            
+
+            <ModalView modalData={modalData} setModalData={setModalData} />
+
         </SafeAreaView>
     </SafeAreaProvider>;
 }
