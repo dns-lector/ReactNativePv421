@@ -27,7 +27,16 @@ export default function ModalView({modalData, setModalData}:{
                 {modalData && (modalData.buttons?.length ?? 0) > 0 &&
                     <View style={styles.buttonsRow}>
                         {modalData.buttons!.map((b,i) => 
-                            <FirmButton key={i} buttonType={b.buttonType} title={b.title} />)}
+                            <FirmButton
+                              key={i} 
+                              buttonType={b.buttonType} 
+                              title={b.title} 
+                              action={() => {
+                                if(b.action) {
+                                  b.action();
+                                }
+                                setModalData(null);
+                              } }/>)}
                         
                     </View>
                 }

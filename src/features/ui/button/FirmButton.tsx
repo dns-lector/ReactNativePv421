@@ -1,5 +1,5 @@
 import { Children } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import { textColor } from "../../values/colors";
 
 export const ButtonTypes = {
@@ -10,19 +10,21 @@ export const ButtonTypes = {
 
 export type ButtonTypes = typeof ButtonTypes[keyof typeof ButtonTypes];
 
-export function FirmButton({buttonType, title, action}:{
+export function FirmButton({buttonType, title, action, style}:{
     buttonType?:ButtonTypes,
     title: string,
-    action?: () => void
+    action?: () => void,
+    style?: StyleProp<ViewStyle>
 }) {
     if(!buttonType) {
         buttonType = ButtonTypes.primary;
     }
-    return <TouchableOpacity style={[styles.firmButton, 
+    return <TouchableOpacity onPress={() => { if(action) action(); }}
+    style={[styles.firmButton, 
         (buttonType == ButtonTypes.danger ? styles.danger
         :buttonType == ButtonTypes.success ? styles.success
         :styles.primary 
-        )
+        ), style
     ]}>
         <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>;
@@ -31,6 +33,7 @@ export function FirmButton({buttonType, title, action}:{
 const styles = StyleSheet.create({
     title: {
         color: textColor,
+        textAlign: "center"
     },
     firmButton: {
         borderRadius: 7.0,
