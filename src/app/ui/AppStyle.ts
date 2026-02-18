@@ -41,6 +41,8 @@ const AppStyle = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 50,
+    borderTopColor: "#333",
+    borderTopWidth: 1.5,
   },
 });
 

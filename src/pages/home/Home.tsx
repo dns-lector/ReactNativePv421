@@ -9,6 +9,7 @@ export default function Home() {
         <View style={HomeStyle.homeContainer}>
             <MenuItem title="Калькулятор"   slug="calc"   imgSrc={require("../../features/assets/img/calc.png" )} />
             <MenuItem title="Жести: свайпи" slug="swipe"  imgSrc={require("../../features/assets/img/swipe.png")} />
+            <MenuItem title="Теревеньки"    slug="chat"   imgSrc={require("../../features/assets/img/chat.png" )} />
             <MenuItem title="Анімації"      slug="anim"   imgSrc={require("../../features/assets/img/anim.png" )} />
             <MenuItem title="Курси валют"   slug="rates"  imgSrc={require("../../features/assets/img/rate.png" )} />
             <MenuItem title="Повідомлення"  slug="alerts" imgSrc={require("../../features/assets/img/bell.png" )} />

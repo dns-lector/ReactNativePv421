@@ -16,6 +16,7 @@ import '../../shared/extensions/NumberExtensions';
 import ModalView from "./ModalView";
 import IModalData from "../../features/interfaces/modal/IModalData";
 import Alerts from "../../pages/alerts/Alerts";
+import Chat from "../../pages/chat/Chat";
 
 
 export default function App() {
@@ -79,6 +80,7 @@ export default function App() {
                     : page.slug == 'alerts' ? <Alerts />
                     : page.slug == 'anim'   ? <Anim   />
                     : page.slug == 'calc'   ? <Calc   />
+                    : page.slug == 'chat'   ? <Chat   />
                     : page.slug == 'home'   ? <Home   />
                     : page.slug == 'rates'  ? <Rates  />
                     : page.slug == 'swipe'  ? <Swipe  />
@@ -102,6 +104,14 @@ export default function App() {
                         onPress={() => navigate({slug: "calc"})}>
                         <Image 
                             source={require("../../features/assets/img/calc.png")}
+                            style={{width: 28, height: 28, tintColor: "#ddd", marginTop: 16}} />
+                    </TouchableOpacity>
+
+                     <TouchableOpacity 
+                        style={{width: 48, height: 48}}
+                        onPress={() => navigate({slug: "chat"})}>
+                        <Image 
+                            source={require("../../features/assets/img/chat.png")}
                             style={{width: 28, height: 28, tintColor: "#ddd", marginTop: 16}} />
                     </TouchableOpacity>
 

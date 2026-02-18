@@ -1,15 +1,16 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import AuthStyle from './css/AuthStyle';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { textColor } from '../../features/values/colors';
 import AppContext from '../../features/context/AppContext';
 import { ButtonTypes, FirmButton } from '../../features/ui/button/FirmButton';
 import SignUpView from './ui/SignUpView';
+import SignInView from './ui/SignInView';
 
 
 export default function Auth() {
     const {user} = useContext(AppContext);
-    const [pageMode, setPageMode] = useState("SignUp");
+    const [pageMode, setPageMode] = useState("SignIn");
 
 
     return !!user 
@@ -34,42 +35,6 @@ function PageSwitchWidget({pageMode, setPageMode}:{pageMode:string, setPageMode:
     </View>;
 }
 
-function SignInView() {   // Log in
-    const [login, setLogin] = useState("user");
-    const [password, setPassword] = useState("123");
-    const [isFormValid, setFormValid] = useState(false);
-    const {setUser} = useContext(AppContext);
-
-    useEffect(() => {
-        setFormValid(login.length > 2 && password.length > 2);
-    }, [login, password]);
-
-    const signInClick = () => {
-        if(login == 'user' && password == '123') {
-            setUser({
-                name: 'User',
-                token: '123',
-            });
-        }
-    };
-
-    return <>
-        <View style={AuthStyle.authRow}>
-            <Text style={AuthStyle.authRowText}>Логін</Text>
-            <TextInput style={AuthStyle.authRowInput} value={login} onChangeText={setLogin} />
-        </View>
-
-        <View style={AuthStyle.authRow}>
-            <Text style={AuthStyle.authRowText}>Пароль</Text>
-            <TextInput secureTextEntry={true} style={AuthStyle.authRowInput} value={password} onChangeText={setPassword} />
-        </View>
-
-        <TouchableOpacity style={AuthStyle.authButton} onPress={isFormValid ? signInClick : undefined}>
-            <Text style={[AuthStyle.authButtonText, {color: isFormValid ? textColor : "#777"}]}>Вхід</Text>
-        </TouchableOpacity>
-    </>;
-}
-
 function SignedView() {
     const {user, setUser} = useContext(AppContext);
 
@@ -79,6 +44,17 @@ function SignedView() {
     return <View style={AuthStyle.authContainer}>
         <View style={AuthStyle.authRow}>
             <Text style={AuthStyle.authRowText}>Вітання, {user!.name}</Text>
+        </View>
+        <View style={AuthStyle.authRow}>
+            <Text style={AuthStyle.authRowText}>E-mail: {user!.email}</Text>
+        </View>
+        <View style={AuthStyle.authRow}>
+            <Text style={AuthStyle.authRowText}>Телефон: {user!.phone}</Text>
+        </View>
+        <View style={AuthStyle.authRow}>
+            <Text style={AuthStyle.authRowText}>Дата народження: {user!.birthdate.toDotted()}</Text>
+        </View>
+        <View style={AuthStyle.authRow}>
             <TouchableOpacity style={AuthStyle.authButton} onPress={signOutClick}>
                 <Text style={[AuthStyle.authButtonText, {color: textColor}]}>Вихід</Text>
             </TouchableOpacity>
@@ -86,8 +62,7 @@ function SignedView() {
     </View>;
 }
 /*
-Д.З. Розширити дані, що характеризують користувача:
-додати номер телефону, E-mail, інші дані (за профілем застосунку)
-вивести відповідні дані на сторінці-профілі,
-до звіту з ДЗ додати скріншот
+Д.З. Стилізувати сторінку профіля користувача.
+Реалізувати режим редагування даних з реактивною валідацією
+(деактивація кнопки збереження у разі некоректних даних)
 */
