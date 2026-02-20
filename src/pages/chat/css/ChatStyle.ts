@@ -9,7 +9,7 @@ const ChatStyle = StyleSheet.create({
         justifyContent: "space-between",
     },
     messagesScroller: {
-        backgroundColor: "lime",
+        // backgroundColor: "lime",
         flex: 1,
     },
     messages: {
@@ -38,6 +38,21 @@ const ChatStyle = StyleSheet.create({
         width: 42.0,
         height: 42.0,
         tintColor: textColor,
+    },
+    post: {
+        borderWidth: 1.0,
+        borderColor: "lime",
+        backgroundColor: "lime",
+        borderBottomRightRadius: 10.0,
+        borderTopLeftRadius: 10.0,
+        borderTopRightRadius: 10.0,
+        marginLeft: 10.0,
+        marginVertical: 5.0,
+        marginRight: 40.0,
+        width: "auto",
+        alignSelf: "flex-start",
+        paddingVertical: 3.0,
+        paddingHorizontal: 10.0,
     }
 });
 
