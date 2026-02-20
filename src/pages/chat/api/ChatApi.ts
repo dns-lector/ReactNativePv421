@@ -2,9 +2,15 @@ import IChatPost from "../orm/IChatPost";
 
 export default class ChatApi {
 
-    static getMessages(): Promise<Array<IChatPost>> {
+    static getMessages(token?:string): Promise<Array<IChatPost>> {
         return new Promise((resolve, reject) => {
-            fetch("https://chat.sodes.studio/post")
+            const init = token ? {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            } : undefined;
+
+            fetch("https://chat.sodes.studio/post", init)
             .then(r => r.json())
             .then(j => {
                 for(let post of j.data as Array<IChatPost>) {

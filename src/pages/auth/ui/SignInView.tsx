@@ -6,7 +6,7 @@ import { textColor } from "../../../features/values/colors";
 import { Buffer } from 'buffer';
 
 export default function SignInView() {   // Log in
-    const [login, setLogin] = useState("exp_user@ukr.net");  // exp_user@ukr.net  +380123456789
+    const [login, setLogin] = useState("+380123456788");  // exp_user@ukr.net  +380123456789
     const [password, setPassword] = useState("123");
     const [isFormValid, setFormValid] = useState(false);
     const {setUser, showModal} = useContext(AppContext);

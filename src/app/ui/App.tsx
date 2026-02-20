@@ -60,6 +60,21 @@ export default function App() {
         setModalData(data);
     };
 
+    // const request = (input: string, init?: any): Promise => {
+    //     if(input.startsWith('/')) {
+    //         input = "https://chat.sodes.studio" + input;
+    //     }
+    //     if(!init) {
+    //         init = {};
+    //     }
+    //     if(typeof init.headers == 'undefined') {
+    //         init.headers = {};
+    //     }
+    //     if(typeof init.headers['Authorization'] == 'undefined' && user?.token) {
+    //         init.headers['Authorization'] = "Bearer " + user.token;
+    //     }
+    // };
+
     return <SafeAreaProvider>
         <SafeAreaView edges={['top', 'bottom']} style={AppStyle.container}>
 
