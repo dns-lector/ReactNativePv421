@@ -17,6 +17,7 @@ import ModalView from "./ModalView";
 import IModalData from "../../features/interfaces/modal/IModalData";
 import Alerts from "../../pages/alerts/Alerts";
 import Chat from "../../pages/chat/Chat";
+import Booking from "../../pages/booking/Booking";
 
 
 export default function App() {
@@ -92,13 +93,14 @@ export default function App() {
             <AppContext.Provider value={{navigate, user, setUser, showModal,}}>
                 <View style={AppStyle.main}>
                     { user == null || page.slug == 'auth' ? <Auth />
-                    : page.slug == 'alerts' ? <Alerts />
-                    : page.slug == 'anim'   ? <Anim   />
-                    : page.slug == 'calc'   ? <Calc   />
-                    : page.slug == 'chat'   ? <Chat   />
-                    : page.slug == 'home'   ? <Home   />
-                    : page.slug == 'rates'  ? <Rates  />
-                    : page.slug == 'swipe'  ? <Swipe  />
+                    : page.slug == 'alerts' ? <Alerts  />
+                    : page.slug == 'anim'   ? <Anim    />
+                    : page.slug == 'book'   ? <Booking />
+                    : page.slug == 'calc'   ? <Calc    />
+                    : page.slug == 'chat'   ? <Chat    />
+                    : page.slug == 'home'   ? <Home    />
+                    : page.slug == 'rates'  ? <Rates   />
+                    : page.slug == 'swipe'  ? <Swipe   />
                     : <Text>404</Text>
                     }                
                 </View>
