@@ -15,3 +15,7 @@
 
 Створюємо проєкт за інструкцією
 https://reactnative.dev/docs/getting-started-without-a-framework
+
+subst R: "C:\Users\samoylenko_d\source\repos\dns-lector\ReactNativePv421"
+R:
+npx react-native run-android
